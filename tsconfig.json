@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": ["es2021"],
+    "module": "Node16",
+    "target": "es2021",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "outDir": "build",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "Node16",
+    "resolveJsonModule": true,
+    "paths": {
+      "@build/*": ["build/*"],
+      "@models/*": ["src/models/*"],
+      "@controllers/*": ["src/controllers/*"]
+    },
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths"
+      }
+    ]
+  },
+  "ts-node": {
+    "transpileOnly": true,
+    "require": ["typescript-transform-paths/register"]
+  },
+  "include": ["src", "build"],
+  "exclude": ["node_modules"]
+}
