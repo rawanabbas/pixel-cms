@@ -7,12 +7,15 @@ const SALT_ROUNDS = 10;
 
 @Route("auth")
 @Tags("Authentication")
-export class UserController {
-    async hashPassword(password: string): Promise<string> {
+export class AuthController {
+    private async hashPassword_(password: string): Promise<string> {
         return hash(password, SALT_ROUNDS);
     }
 
-    async comparePasswords(password: string, hash: string): Promise<boolean> {
+    private async comparePasswords_(
+        password: string,
+        hash: string
+    ): Promise<boolean> {
         return compare(password, hash);
     }
 
@@ -29,7 +32,7 @@ export class UserController {
         if (!user) {
             throw new Error("User not found");
         }
-        const isPasswordMatching = await this.comparePasswords(
+        const isPasswordMatching = await this.comparePasswords_(
             requestBody.password,
             user.password
         );
@@ -48,7 +51,7 @@ export class UserController {
         @Request() request: ExpressRequest
     ): Promise<UserAttributes> {
         const session = request.session;
-        requestBody.password = await this.hashPassword(requestBody.password);
+        requestBody.password = await this.hashPassword_(requestBody.password);
         const user = await UserModel.create(requestBody);
         user.password = undefined as unknown as string;
         session.user = user;

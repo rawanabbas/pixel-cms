@@ -11,7 +11,7 @@ function generateUser(): UserCreationAttributes {
     };
 }
 
-describe("Users API", () => {
+describe("Authentication API", () => {
     let app: Application;
     beforeEach(async () => {
         app = await express;
