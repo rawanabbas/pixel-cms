@@ -17,6 +17,7 @@
     "resolveJsonModule": true,
     "paths": {
       "@build/*": ["build/*"],
+      "@src/*": ["src/*"],
       "@models/*": ["src/models/*"],
       "@controllers/*": ["src/controllers/*"]
     },
