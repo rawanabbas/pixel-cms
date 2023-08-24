@@ -3,7 +3,6 @@ export interface UserAttributes {
     id: number;
     username: string;
     password: string;
-    email: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -11,7 +10,6 @@ export interface UserAttributes {
 export interface UserCreationAttributes extends Partial<Omit<UserAttributes, 'id' | 'createdAt' | 'updatedAt'>> {
     username: string;
     password: string;
-    email: string;
 }
 
 @Table
@@ -29,10 +27,6 @@ export default class User extends Model<UserAttributes, UserCreationAttributes> 
     @AllowNull(false)
     @Column(DataType.STRING)
     password!: string;
-
-    @AllowNull(false)
-    @Column(DataType.STRING)
-    email!: string;
 
     @CreatedAt
     @Column(DataType.DATE)
