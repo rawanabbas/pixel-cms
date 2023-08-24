@@ -1,5 +1,5 @@
 {
   "exec": "ts-node  -C ts-patch/compiler --project tsconfig.json ./src/app.ts",
-  "watch": ["src"],
+  "watch": ["src", "test"],
   "ext": "ts"
 }

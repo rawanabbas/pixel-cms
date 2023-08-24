@@ -4,16 +4,25 @@
   "controllerPathGlobs": ["src/**/*Controller.ts"],
   "spec": {
     "outputDirectory": "build",
-    "specVersion": 3
+    "specVersion": 3,
+    "securityDefinitions": {
+      "sessionAuth": {
+        "type": "apiKey",
+        "in": "Cookie",
+        "name": "connect.sid"
+      }
+    }
   },
   "routes": {
     "routesDir": "build",
-    "baseRoute": "/api/v1"
+    "authenticationModule": "./src/authentication.ts"
   },
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
       "@build/*": ["build/*"],
+      "@src/*": ["src/*"],
+      "@test/*": ["test/*"],
       "@models/*": ["src/models/*"],
       "@controllers/*": ["src/controllers/*"]
     },
