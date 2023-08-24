@@ -5,3 +5,5 @@ A simple CMS for practice
 ``` pnpm run build ```
 ### Run Dev Server
 ``` pnpm run dev ```
+### Test
+``` pnpm run test ```

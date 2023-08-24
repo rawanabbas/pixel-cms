@@ -15,6 +15,7 @@
     "paths": {
       "@build/*": ["build/*"],
       "@src/*": ["src/*"],
+      "@test/*": ["test/*"],
       "@models/*": ["src/models/*"],
       "@controllers/*": ["src/controllers/*"]
     },

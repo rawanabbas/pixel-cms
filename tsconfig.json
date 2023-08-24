@@ -18,6 +18,7 @@
     "paths": {
       "@build/*": ["build/*"],
       "@src/*": ["src/*"],
+      "@test/*": ["test/*"],
       "@models/*": ["src/models/*"],
       "@controllers/*": ["src/controllers/*"]
     },
@@ -31,6 +32,6 @@
     "transpileOnly": true,
     "require": ["typescript-transform-paths/register"]
   },
-  "include": ["src", "build"],
+  "include": ["src", "build", "test"],
   "exclude": ["node_modules"]
 }
