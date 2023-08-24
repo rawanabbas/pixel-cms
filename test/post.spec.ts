@@ -1,8 +1,8 @@
 import { expect, request } from 'chai';
 import PostModel, { PostCreationAttributes } from '@models/post';
 import { faker } from '@faker-js/faker';
-import express from 'express';
-import createApp from '@src/app';
+import { type Application } from 'express';
+import express from '@src/app';
 
 function generatePost(): PostCreationAttributes {
     return {
@@ -13,9 +13,9 @@ function generatePost(): PostCreationAttributes {
 }
 
 describe('Posts API', () => {
-    let app : express.Application;
+    let app : Application;
     beforeEach(async () => {
-        app = await createApp;
+        app = await express;
     });
     afterEach(() => {
         PostModel.destroy({
