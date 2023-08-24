@@ -24,7 +24,7 @@ export class AuthController {
         @Body()
         requestBody: Omit<UserAttributes, "id" | "createdAt" | "updatedAt">,
         @Request() request: ExpressRequest
-    ): Promise<UserAttributes> {
+    ): Promise<Omit<UserAttributes, "password">> {
         const session = request.session;
         const user = await UserModel.findOne({
             where: { username: requestBody.username },
@@ -49,7 +49,7 @@ export class AuthController {
         @Body()
         requestBody: Omit<UserAttributes, "id" | "createdAt" | "updatedAt">,
         @Request() request: ExpressRequest
-    ): Promise<UserAttributes> {
+    ): Promise<Omit<UserAttributes, "password">> {
         const session = request.session;
         requestBody.password = await this.hashPassword_(requestBody.password);
         const user = await UserModel.create(requestBody);

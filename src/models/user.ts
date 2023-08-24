@@ -1,4 +1,14 @@
-import { Table, Column, Model, DataType, CreatedAt, UpdatedAt, AllowNull, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
+import {
+    Table,
+    Column,
+    Model,
+    DataType,
+    CreatedAt,
+    UpdatedAt,
+    AllowNull,
+    PrimaryKey,
+    AutoIncrement,
+} from "sequelize-typescript";
 export interface UserAttributes {
     id: number;
     username: string;
@@ -7,13 +17,17 @@ export interface UserAttributes {
     updatedAt: Date;
 }
 
-export interface UserCreationAttributes extends Partial<Omit<UserAttributes, 'id' | 'createdAt' | 'updatedAt'>> {
+export interface UserCreationAttributes
+    extends Omit<UserAttributes, "id" | "createdAt" | "updatedAt"> {
     username: string;
     password: string;
 }
 
 @Table
-export default class User extends Model<UserAttributes, UserCreationAttributes> {
+export default class User extends Model<
+    UserAttributes,
+    UserCreationAttributes
+> {
     @PrimaryKey
     @AutoIncrement
     @AllowNull(false)
