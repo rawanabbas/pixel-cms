@@ -12,7 +12,7 @@ function generatePost(): PostCreationAttributes {
     };
 }
 
-describe('PostController', () => {
+describe('Posts API', () => {
     let app : express.Application;
     beforeEach(async () => {
         app = await createApp;
