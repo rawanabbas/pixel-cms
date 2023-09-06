@@ -8,7 +8,9 @@ import {
     AllowNull,
     PrimaryKey,
     AutoIncrement,
+    HasMany,
 } from "sequelize-typescript";
+import Post from "@models/post";
 export interface UserAttributes {
     id: number;
     username: string;
@@ -49,4 +51,7 @@ export default class User extends Model<
     @UpdatedAt
     @Column(DataType.DATE)
     updatedAt!: Date;
+
+    @HasMany(() => Post)
+    posts!: Post[];
 }

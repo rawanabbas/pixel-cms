@@ -133,3 +133,11 @@ dist
 #build files
 build
 build/*
+
+#ignore files
+test/*.png
+test/*.jpeg
+test/*.jpg
+test/*.txt
+tmp/*
+tmp

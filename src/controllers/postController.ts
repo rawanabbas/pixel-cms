@@ -10,9 +10,15 @@ import {
     SuccessResponse,
     Security,
     Request,
+    FormField,
+    UploadedFile,
 } from "tsoa";
 import PostModel, { PostAttributes } from "@models/post";
 import type { Request as ExpressRequest } from "express";
+import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
+import { extname, join } from "path";
+
 @Route("posts")
 @Tags("Post")
 export class PostController {
@@ -29,11 +35,30 @@ export class PostController {
     @Post("/")
     @Security("sessionAuth")
     public async create(
-        @Body()
-        requestBody: Omit<PostAttributes, "id" | "createdAt" | "updatedAt">,
-        @Request() req: ExpressRequest
+        @Request() req: ExpressRequest,
+        @FormField("title") title: string,
+        @FormField("body") body: string,
+        @UploadedFile("image") image?: Express.Multer.File
     ): Promise<PostAttributes> {
-        return await PostModel.create(requestBody);
+        console.log(req);
+        if (image) {
+            const imgExtention = extname(image.originalname);
+            const imgFilename = `${uuidv4()}.${imgExtention}`;
+            const path = join(process.cwd(), "tmp", imgFilename);
+            fs.writeFileSync(path, image.buffer);
+            return await PostModel.create({
+                title,
+                body,
+                image: image.originalname,
+                userId: req.session.user!.id,
+            });
+        }
+
+        return await PostModel.create({
+            title,
+            body,
+            userId: req.session.user!.id,
+        });
     }
 
     @Put("/:id")

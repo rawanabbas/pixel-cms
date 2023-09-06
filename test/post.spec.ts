@@ -1,24 +1,12 @@
 import { expect, request } from "chai";
-import PostModel, { PostCreationAttributes } from "@models/post";
-import UserModel, { UserCreationAttributes } from "@models/user";
-import { faker } from "@faker-js/faker";
+import PostModel from "@models/post";
+import UserModel from "@models/user";
 import { type Application } from "express";
 import express from "@src/app";
-
-function generatePost(): PostCreationAttributes {
-    return {
-        title: faker.lorem.words(3),
-        body: faker.lorem.paragraphs(3),
-        image: faker.image.url(),
-    };
-}
-
-function generateUser(): UserCreationAttributes {
-    return {
-        username: faker.internet.userName(),
-        password: faker.internet.password(),
-    };
-}
+import fs from "fs";
+import { join } from "path";
+import { generateUser, generatePost } from "@test/utility";
+import { faker } from "@faker-js/faker";
 
 describe("Posts API", () => {
     let app: Application;
@@ -32,14 +20,34 @@ describe("Posts API", () => {
         UserModel.destroy({
             where: {},
         });
+        fs.readdir(join(process.cwd(), "tmp"), (err, files) => {
+            if (err) throw err;
+            for (const file of files) {
+                fs.unlink(join(process.cwd(), "tmp", file), (e) => {
+                    if (e) throw e;
+                });
+            }
+        });
     });
 
     it("should create a post", async () => {
         const agent = request.agent(app);
+
         const mockUser = generateUser();
-        await agent.post("/auth/register").send(mockUser);
-        const mockPost = generatePost();
-        const response = await agent.post("/posts").send(mockPost);
+        const userResponse = await agent.post("/auth/register").send(mockUser);
+
+        const mockPost = generatePost(userResponse.body.id);
+
+        const response = await agent.post("/posts").field({
+            title: mockPost.title,
+            body: mockPost.body,
+            image: "",
+        });
+        // .attach(
+        //     "image",
+        //     fs.readFileSync(`${__dirname}/test.jpeg`),
+        //     "test.jpeg"
+        // );
         expect(response.status).to.equal(200);
         expect(response.body).to.have.property("id");
         expect(response.body).to.be.like(mockPost);
@@ -48,9 +56,18 @@ describe("Posts API", () => {
     });
 
     it("should get all posts", async () => {
-        const mockPosts = faker.helpers.multiple(generatePost, {
-            count: 5,
-        });
+        const mockUser = generateUser();
+        const userResponse = await request(app)
+            .post("/auth/register")
+            .send(mockUser);
+        const mockPosts = faker.helpers.multiple(
+            () => {
+                return generatePost(userResponse.body.id);
+            },
+            {
+                count: 5,
+            }
+        );
         await PostModel.bulkCreate(mockPosts);
         const response = await request(app).get("/posts");
         expect(response.status).to.equal(200);
@@ -59,7 +76,11 @@ describe("Posts API", () => {
     });
 
     it("should get a post by id", async () => {
-        const mockPost = generatePost();
+        const mockUser = generateUser();
+        const userResponse = await request(app)
+            .post("/auth/register")
+            .send(mockUser);
+        const mockPost = generatePost(userResponse.body.id);
         const post = await PostModel.create(mockPost);
         const response = await request(app).get(`/posts/${post.id}`);
         expect(response.status).to.equal(200);
@@ -69,9 +90,10 @@ describe("Posts API", () => {
     it("should update a post", async () => {
         const agent = request.agent(app);
         const mockUser = generateUser();
-        await agent.post("/auth/register").send(mockUser);
-        const mockPost = generatePost();
-        const updatedMockPost = generatePost();
+        const userResponse = await agent.post("/auth/register").send(mockUser);
+
+        const mockPost = generatePost(userResponse.body.id);
+        const updatedMockPost = generatePost(userResponse.body.id);
         const post = await PostModel.create(mockPost);
         const response = await agent
             .put(`/posts/${post.id}`)
@@ -83,8 +105,9 @@ describe("Posts API", () => {
     it("should delete a post by id", async () => {
         const agent = request.agent(app);
         const mockUser = generateUser();
-        await agent.post("/auth/register").send(mockUser);
-        const mockPost = generatePost();
+        const userResponse = await agent.post("/auth/register").send(mockUser);
+
+        const mockPost = generatePost(userResponse.body.id);
         const post = await PostModel.create(mockPost);
         const response = await agent.delete(`/posts/${post.id}`);
         expect(response.status).to.equal(204);

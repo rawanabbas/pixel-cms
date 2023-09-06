@@ -1,15 +1,9 @@
 import { expect, request } from "chai";
-import UserModel, { UserCreationAttributes } from "@models/user";
-import { faker } from "@faker-js/faker";
+import UserModel from "@models/user";
+import PostModel from "@models/post";
 import { type Application } from "express";
 import express from "@src/app";
-
-function generateUser(): UserCreationAttributes {
-    return {
-        username: faker.internet.userName(),
-        password: faker.internet.password(),
-    };
-}
+import { generatePost, generateUser } from "@test/utility";
 
 describe("Authentication API", () => {
     let app: Application;
@@ -45,10 +39,18 @@ describe("Authentication API", () => {
     });
 
     it("should logout a user", async () => {
+        const agent = request.agent(app);
         const mockUser = generateUser();
-        await request(app).post("/auth/register").send(mockUser);
-        await request(app).post("/auth/login").send(mockUser);
-        const response = await request(app).get("/auth/logout");
+        await agent.post("/auth/register").send(mockUser);
+        await agent.post("/auth/login").send(mockUser);
+        const response = await agent.get("/auth/logout");
         expect(response.status).to.equal(204);
+
+        const mockPost = generatePost();
+        const postResponse = await agent.post("/posts").field({
+            title: mockPost.title,
+            body: mockPost.body,
+        });
+        expect(postResponse.status).to.equal(401);
     });
 });
