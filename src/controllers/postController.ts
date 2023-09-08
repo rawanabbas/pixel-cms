@@ -56,7 +56,7 @@ export class PostController {
                 return await PostModel.create({
                     title,
                     body,
-                    image: imgFilename,
+                    image: `https://${config.aws.s3.bucket_name}.amazonaws.com/${imgFilename}`,
                     userId: req.session.user!.id,
                 });
             } catch (e) {
