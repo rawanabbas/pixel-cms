@@ -43,6 +43,7 @@ describe("Posts API", () => {
             body: mockPost.body,
             image: "",
         });
+        // This line is for testing file upload and is commented out to prevent exhausting resources
         // .attach(
         //     "image",
         //     fs.readFileSync(`${__dirname}/test.jpeg`),
